@@ -267,6 +267,7 @@ jest
     .mock("moduleName", jest.fn(), { virtual: true })
     .resetModuleRegistry()
     .resetModules()
+    .isolateModules(() => {})
     .retryTimes(3)
     .runAllImmediates()
     .runAllTicks()
@@ -829,6 +830,8 @@ describe("", () => {
         expect({ abc: "def" }).toMatchObject({ abc: "def" });
         expect({}).toMatchObject([{}, {}]);
         expect({ abc: "def" }).toMatchObject([{ abc: "def" }, { invalid: "property" }]);
+        expect({abc: "def"}).toMatchObject<{abc: string}>({abc: "def"});
+        expect([{abc: 'def'}, {abc: 'def'}]).toMatchObject<[{abc: string}, {abc: string}]>([{abc: 'def'}, {abc: 'def'}]);
 
         expect({}).toMatchSnapshot();
         expect({}).toMatchSnapshot("snapshotName");

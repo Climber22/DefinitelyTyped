@@ -1,5 +1,5 @@
 // Type definitions for Jest 24.0
-// Project: http://facebook.github.io/jest/
+// Project: https://jestjs.io
 // Definitions by: Asana <https://asana.com>
 //                 Ivo Stratev <https://github.com/NoHomey>
 //                 jwbay <https://github.com/jwbay>
@@ -18,6 +18,7 @@
 //                 Sebastian Sebald <https://github.com/sebald>
 //                 Andy <https://github.com/andys8>
 //                 Antoine Brault <https://github.com/antoinebrault>
+//                 Jeroen Claassens <https://github.com/favna>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 3.0
 
@@ -155,6 +156,11 @@ declare namespace jest {
      */
     function resetModules(): typeof jest;
     /**
+     * Creates a sandbox registry for the modules that are loaded inside the callback function..
+     * This is useful to isolate specific modules for every test so that local module state doesn't conflict between tests.
+     */
+    function isolateModules(fn: () => void): typeof jest;
+    /**
      * Runs failed tests n-times until they pass or until the max number of retries is exhausted.
      * This only works with jest-circus!
      */
@@ -264,7 +270,23 @@ declare namespace jest {
     }
 
     interface Each {
-        (cases: any[]): (name: string, fn: (...args: any[]) => any, timeout?: number) => void;
+        // Exclusively arrays.
+        <T extends any[]>(cases: ReadonlyArray<T>): (
+            name: string,
+            fn: (...args: T) => any,
+            timeout?: number
+        ) => void;
+        // Not arrays.
+        <T>(cases: ReadonlyArray<T>): (
+            name: string,
+            fn: (...args: T[]) => any,
+            timeout?: number
+        ) => void;
+        (cases: ReadonlyArray<ReadonlyArray<any>>): (
+            name: string,
+            fn: (...args: any[]) => any,
+            timeout?: number
+        ) => void;
         (strings: TemplateStringsArray, ...placeholders: any[]): (
             name: string,
             fn: (arg: any) => any,
@@ -736,8 +758,25 @@ declare namespace jest {
         toMatch(expected: string | RegExp): R;
         /**
          * Used to check that a JavaScript object matches a subset of the properties of an object
+         *
+         * Optionally, you can provide an object to use as Generic type for the expected value.
+         * This ensures that the matching object matches the structure of the provided object-like type.
+         *
+         * @example
+         *
+         * type House = {
+         *   bath: boolean;
+         *   bedrooms: number;
+         *   kitchen: {
+         *     amenities: string[];
+         *     area: number;
+         *     wallColor: string;
+         *   }
+         * };
+         *
+         * expect(desiredHouse).toMatchObject<House>(...standardHouse, kitchen: {area: 20}) // wherein standardHouse is some base object of type House
          */
-        toMatchObject(expected: {} | any[]): R;
+        toMatchObject<E extends {} | any[]>(expected: E): R;
         /**
          * This ensures that a value matches the most recent snapshot with property matchers.
          * Check out [the Snapshot Testing guide](http://facebook.github.io/jest/docs/snapshot-testing.html) for more information.

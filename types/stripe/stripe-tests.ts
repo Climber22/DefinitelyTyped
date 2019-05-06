@@ -698,6 +698,118 @@ stripe.accounts.update("acct_17wV8KBoqMA9o2xk",
     }
 );
 
+stripe.accounts.update("acct_17wV8KBoqMA9o2xk",
+    {
+        business_profile: {
+            mcc: '1234',
+            name: 'My Amazing Company',
+            product_description: 'My Amazing Product',
+            support_address: {
+                line1: '42 Wallaby Way',
+                line2: 'Apt 1',
+                city: 'Sydney',
+                state: 'NSW',
+                postal_code: '1000',
+                country: 'Australia'
+            },
+            support_email: 'support@example.org',
+            support_phone: '+15555551212',
+            support_url: 'https://example.org',
+            url: 'https://example.org'
+        },
+        settings: {
+            branding: {
+                icon: 'https://example.org/icon.png',
+                logo: 'https://example.org/logo.png',
+                primary_color: '#a346b7'
+            },
+            card_payments: {
+                decline_on: {
+                    avs_failure: false,
+                    cvc_failure: false
+                },
+                statement_descriptor_prefix: 'foo'
+            },
+            dashboard: {
+                display_name: 'My Amazing Company',
+                timezone: 'America/Montreal'
+            },
+            payments: {
+                statement_descriptor: 'example.org'
+            },
+            payouts: {
+                debit_negative_balances: true,
+                schedule: {
+                    delay_days: 7,
+                    interval: 'daily',
+                    monthly_anchor: 1,
+                    weekly_anchor: 'monday'
+                },
+                statement_descriptor: 'foo'
+            }
+        }
+    }).then(
+    (account) => {
+        // asynchronously called
+    }
+);
+
+stripe.accounts.update("acct_17wV8KBoqMA9o2xk",
+    {
+        business_profile: {
+            mcc: null,
+            name: null,
+            product_description: null,
+            support_address: {
+                line1: null,
+                line2: null,
+                city: null,
+                state: null,
+                postal_code: null,
+                country: null,
+            },
+            support_email: null,
+            support_phone: null,
+            support_url: null,
+            url: null
+        },
+        settings: {
+            branding: {
+                icon: null,
+                logo: null,
+                primary_color: null
+            },
+            card_payments: {
+                decline_on: {
+                    avs_failure: null,
+                    cvc_failure: null
+                },
+                statement_descriptor_prefix: null
+            },
+            dashboard: {
+                display_name: null,
+                timezone: null
+            },
+            payments: {
+                statement_descriptor: null
+            },
+            payouts: {
+                debit_negative_balances: null,
+                schedule: {
+                    delay_days: null,
+                    interval: null,
+                    monthly_anchor: null,
+                    weekly_anchor: null
+                },
+                statement_descriptor: null
+            }
+        }
+    }).then(
+    (account) => {
+        // asynchronously called
+    }
+);
+
 stripe.accounts.del("acct_17wV8KBoqMA9o2xk", (err, confirmation) => { });
 stripe.accounts.del("acct_17wV8KBoqMA9o2xk").then((confirmation) => { });
 
@@ -855,6 +967,7 @@ const event: Stripe.events.IEvent = stripe.webhooks.constructEvent(
 // ##################################################################################
 
 stripe.coupons.create({
+    name: '25% Off',
     percent_off: 25,
     duration: 'repeating',
     duration_in_months: 3,
@@ -863,6 +976,7 @@ stripe.coupons.create({
     // asynchronously called
     });
 stripe.coupons.create({
+    name: '25% Off',
     percent_off: 25,
     duration: 'repeating',
     duration_in_months: 3,
@@ -971,6 +1085,7 @@ stripe.invoices.retrieveUpcoming("cus_5rfJKDJkuxzh5Q").then((upcoming) => {
 stripe.invoices.update(
     "in_15fvyXEe31JkLCeQH7QbgZZb",
     {
+        auto_advance: false,
         closed: true
     },
     (err, invoice) => {
@@ -980,6 +1095,7 @@ stripe.invoices.update(
 stripe.invoices.update(
     "in_15fvyXEe31JkLCeQH7QbgZZb",
     {
+        auto_advance: false,
         closed: true
     }).then((invoice) => {
         // asynchronously called
@@ -1016,6 +1132,53 @@ stripe.invoices.retrieve("in_15fvyXEe31JkLCeQH7QbgZZb", { expand: ["subscription
 //#region Invoice Items tests
 // ##################################################################################
 
+//#endregion
+
+//#region Payment Intents test
+// ##################################################################################
+stripe.paymentIntents.create({
+    amount: 2000,
+    currency: "eur",
+    payment_method_types: ["card"],
+}, (err, intent) => {});
+
+stripe.paymentIntents.create({
+    amount: 2000,
+    currency: "eur",
+    payment_method_types: ["card"],
+}).then((intent) => {});
+
+stripe.paymentIntents.list({}, (err, intent) => {});
+stripe.paymentIntents.list({}).then((intent) => {});
+stripe.paymentIntents.list((err, intent) => {});
+stripe.paymentIntents.list().then((intent) => {});
+stripe.paymentIntents.list({ expired: true }, (err, intent) => {});
+stripe.paymentIntents.list({ expired: true }).then((intent) => {});
+
+stripe.paymentIntents.update("pi_Aabcxyz01aDfoo", {
+    amount: 2001,
+    currency: 'usd',
+}, (err, intent) => {});
+stripe.paymentIntents.update("pi_Aabcxyz01aDfoo", {
+    amount: 2001,
+    currency: 'usd',
+}).then((intent) => {});
+
+stripe.paymentIntents.retrieve("pi_Aabcxyz01aDfoo", (err, intent) => {});
+stripe.paymentIntents.retrieve("pi_Aabcxyz01aDfoo").then((intent) => {});
+
+stripe.paymentIntents.confirm("pi_Aabcxyz01aDfoo", {}, (err, intent) => {});
+stripe.paymentIntents.confirm("pi_Aabcxyz01aDfoo", {}).then((intent) => {});
+
+stripe.paymentIntents.capture("pi_Aabcxyz01aDfoo", {}, (err, intent) => {});
+stripe.paymentIntents.capture("pi_Aabcxyz01aDfoo", {}).then((intent) => {});
+
+stripe.paymentIntents.cancel("pi_Aabcxyz01aDfoo", (err, intent) => {});
+stripe.paymentIntents.cancel("pi_Aabcxyz01aDfoo").then((intent) => {});
+stripe.paymentIntents.cancel("pi_Aabcxyz01aDfoo", {}, (err, intent) => {});
+stripe.paymentIntents.cancel("pi_Aabcxyz01aDfoo", {}).then((intent) => {});
+stripe.paymentIntents.cancel("pi_Aabcxyz01aDfoo", { cancellation_reason: 'duplicate' }, (err, intent) => {});
+stripe.paymentIntents.cancel("pi_Aabcxyz01aDfoo", { cancellation_reason: 'requested_by_customer' }).then((intent) => {});
 //#endregion
 
 //#region Payouts tests
@@ -1332,8 +1495,8 @@ stripe.ephemeralKeys.create({ customer: "cus_5rfJKDJkuxzh5Q" }, { stripe_version
 stripe.usageRecords.create('sub_8QwCiwZ9tmMSpt', { action: 'set', quantity: 10000, timestamp: 1537006853 }).then((usageRecord: Stripe.usageRecords.IUsageRecord) => {});
 stripe.usageRecords.create('sub_8QwCiwZ9tmMSpt', { action: 'set', quantity: 10000, timestamp: 1537006853 }, (err, usageRecord: Stripe.usageRecords.IUsageRecord) => {});
 
-stripe.usageRecordSummaries.list({ subscription_item: 'si_C9gimdd2l9qvCU', limit: 10 }).then((usageRecordSummaries: Stripe.usageRecordSummaries.IUsageRecordSummaries) => {});
-stripe.usageRecordSummaries.list({ subscription_item: 'si_C9gimdd2l9qvCU', limit: 10 }, (err, usageRecordSummaries: Stripe.usageRecordSummaries.IUsageRecordSummaries) => {});
+stripe.usageRecordSummaries.list('si_C9gimdd2l9qvCU', { limit: 10 }).then((usageRecordSummaries: Stripe.usageRecordSummaries.IUsageRecordSummaries) => {});
+stripe.usageRecordSummaries.list('si_C9gimdd2l9qvCU', { limit: 10 }, (err, usageRecordSummaries: Stripe.usageRecordSummaries.IUsageRecordSummaries) => {});
 
 //#region Errors
 // ##################################################################################
